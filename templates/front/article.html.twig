@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}article{% endblock %}
+
+{% block body %}
+    <header class="py-5 bg-primary text-center">
+        <h1>article page</h1>
+        <a href="{{ path('home') }}" class="btn btn-dark text-white ">Homepage</a>
+        <a href="{{ path('rules') }}" class="btn btn-dark text-white ">Rules</a>
+        <a href="{{ path('add') }}" class="btn btn-dark text-white ">Add article</a>
+    </header>
+        <h2>Info sur l'article<h2>
+{% endblock %}
