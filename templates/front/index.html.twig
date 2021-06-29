@@ -3,9 +3,19 @@
 {% block title %}Bonjour{% endblock %}
 
 {% block body %}
-    <header class="py-5 bg-primary text-center">
-        <h1>Le blog</h1>
-        <p class="lead">{{ subtitle }}</p>
-        <a href="{{ path('article') }}" class="btn btn-dark text-white ">article</a>
-    </header>
+    <h2>Page d'acceuil</h2>
+    {% for article in articles %}
+        <div class="card my-3">
+            <div class="card-header">
+                Publié le : {{article.createddate|date('d/m/Y')}} à {{article.createddate|date('H:i')}}
+                Par : {{article.author}}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{article.title}}</h5>
+                <p class="card-text">{{article.content}}</p>
+                <a href="{{ path('article') }}" class="btn btn-dark text-white">Voir</a>
+            </div>
+        </div>
+    {% endfor %}
+
 {% endblock %}

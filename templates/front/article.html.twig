@@ -3,11 +3,15 @@
 {% block title %}article{% endblock %}
 
 {% block body %}
-    <header class="py-5 bg-primary text-center">
-        <h1>article page</h1>
-        <p class="lead">{{ subtitle }}</p>
-        <a href="{{ path('home') }}" class="btn btn-dark text-white ">Homepage</a>
-        <a href="{{ path('add') }}" class="btn btn-dark text-white ">Add article</a>
-    </header>
         <h2>Info sur l'article<h2>
+        <div class="card my-3">
+            <div class="card-header">
+                Publié le : {{article.createddate|date('d/m/Y')}} à {{article.createddate|date('H:i')}}
+                Par : {{article.author}}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{article.title}}</h5>
+                <p class="card-text">{{article.content}}</p>
+            </div>
+        </div>
 {% endblock %}

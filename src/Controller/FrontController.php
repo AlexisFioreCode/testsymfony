@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,18 +16,31 @@ class FrontController extends AbstractController
     {
         $subtitle = "Blog pour test symfony fait gaffe c'est de la merde";
 
+        $articleRepository = $this->getDoctrine()->getRepository(Article::class);
+        $articles = $articleRepository->findby(
+            [],
+            ["id" => "DESC"],
+            3,
+            0
+        );
+        dump($articles);
         return $this->render('front/index.html.twig', [
             'subtitle' => $subtitle,
+            'articles' => $articles,  
         ]);
     }
 
-    #[Route('/home/article/{!page<\d+>?1}', name: 'article') ]
-    public function article(): Response
-    {
+    #[Route('/home/article/{!id<\d+>?1}', name: 'article') ]
+    public function article(int $id): Response
+    {   
         $subtitle = "Blog pour test symfony fait gaffe c'est de la merde";
 
+        $articleRepository = $this->getDoctrine()->getRepository(Article::class);
+        $article = $articleRepository->find($id);
+
         return $this->render('front/article.html.twig', [ 
-            'subtitle' => $subtitle,         
+            'article' => $article,
+            'subtitle' => $subtitle,                  
         ]);
     }
 
