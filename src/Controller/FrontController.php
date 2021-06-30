@@ -3,9 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Form\ArticleType;
+use App\Service\SwearCleaner;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+ /**
+  * @IsGranted("IS_AUTHENTICATED_FULLY")
+  */
 
 class FrontController extends AbstractController
 {
@@ -14,7 +22,6 @@ class FrontController extends AbstractController
 
     public function index(): Response
     {
-        $subtitle = "Blog pour test symfony fait gaffe c'est de la merde";
 
         $articleRepository = $this->getDoctrine()->getRepository(Article::class);
         $articles = $articleRepository->findby(
@@ -23,34 +30,46 @@ class FrontController extends AbstractController
             3,
             0
         );
-        dump($articles);
+
         return $this->render('front/index.html.twig', [
-            'subtitle' => $subtitle,
             'articles' => $articles,  
         ]);
     }
-
     #[Route('/home/article/{!id<\d+>?1}', name: 'article') ]
-    public function article(int $id): Response
+    public function article(int $id, SwearCleaner $swearCleaner): Response
     {   
-        $subtitle = "Blog pour test symfony fait gaffe c'est de la merde";
 
         $articleRepository = $this->getDoctrine()->getRepository(Article::class);
         $article = $articleRepository->find($id);
-
+        $article = $swearCleaner->CleanSwear($article);
         return $this->render('front/article.html.twig', [ 
-            'article' => $article,
-            'subtitle' => $subtitle,                  
+            'article' => $article,                
         ]);
     }
 
-    #[Route('/home/article/add', name: 'add') ]
-    public function add(): Response
+    #[Route('/home/article/add', name: 'addArticle') ]
+    public function addArticle(Request $request): Response
     {
-        $subtitle = "Blog pour test symfony fait gaffe c'est de la merde";
+        // On crée un nouveau Subject vide et un formulaire sur la base de cette entité
+        $article = new Article();
+        $form = $this->createForm(ArticleType::class, $article);
+        // On traite les données soumises lors de la requêtes dans l'objet form
+        $form->handleRequest($request);
+        // Si on a soumis un formulaire et que tout est OK
+        if($form->isSubmitted() && $form->isValid()) {
+            $article->setCreatedDate(new \DateTime());
+            // On enregistre le nouveau sujet
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($article);
+            // Attention les requêtes ne sont exécutées que lors du flush donc à ne pas oublier
+            $entityManager->flush();
 
-        return $this->render('front/add.html.twig', [
-            'subtitle' => $subtitle,          
+            return $this->redirectToRoute('index');
+            
+        }
+        
+        return $this->render('front/addArticle.html.twig', [  
+            "form" => $form->createView()      
         ]);
     }
 }

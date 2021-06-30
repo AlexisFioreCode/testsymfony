@@ -1,7 +1,13 @@
-<header class="py-5 bg-primary text-center">
-        <h1>Blog testsymfony</h1>
-        <p class="lead">{{ subtitle }}</p>
-        <a href="{{ path('home') }}" class="btn btn-dark text-white ">Homepage</a>
-        <a href="{{ path('article') }}" class="btn btn-dark text-white ">article</a>
-        <a href="{{ path('add') }}" class="btn btn-dark text-white ">Add article</a>
+<header class="py-5 bg-secondary text-white text-center">
+        <h1>Mon premier symfony</h1>
+        <h2>Test du framework symfony avec la formation AFPA</h2>       
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a href="{{ path('home') }}" class="btn btn-dark text-white ">Accueil</a>
+            <a href="{{ path('addArticle') }}" class="btn btn-dark text-white ">Nouvel article</a>
+            <a href="{{ path('app_logout') }}" class="btn btn-dark text-white ">Déconnexion</a>
+         {% else %}
+            <a href="{{ path('app_register') }}" class="btn btn-dark text-white ">S'inscrire</a>
+            <a href="{{ path('app_login') }}" class="btn btn-dark text-white ">Se connecter</a>
+        {% endif %}
+        
     </header>
